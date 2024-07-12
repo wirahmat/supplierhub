@@ -1,4 +1,4 @@
-package com.wirahmat.supplierhub;
+package com.supplierhub.supplierhub;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
