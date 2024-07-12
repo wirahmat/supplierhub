@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 public class PersistenceConfig {
 
 	@Bean
-	public FluentConfiguration reimbursementFlywayMigrationConfig() {
+	public FluentConfiguration flywayMigrationConfig() {
 		return Flyway.configure().table("flyway_history")
 				.locations("classpath:db/migration");
 	}
