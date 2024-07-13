@@ -23,6 +23,9 @@ public class User extends MasterEntity {
 	@Column(name = "password", nullable = false)
 	private String password;
 
+	@Column(name = "is_active", nullable = false)
+	private Boolean isActive;
+
 	public String getFullName() {
 		return fullName;
 	}
@@ -45,6 +48,14 @@ public class User extends MasterEntity {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	
+	public Boolean getIsActive() {
+		return isActive;
+	}
+
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
 	}
 
 }

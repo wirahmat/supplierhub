@@ -11,5 +11,7 @@ import com.supplierhub.supplierhub.persistence.entity.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, String>, JpaSpecificationExecutor<User> {
 
+	boolean existsByEmail(String email);
+	
 	Optional<User> findByEmail(String email);
 }
