@@ -37,7 +37,8 @@ public class SecurityConfig {
 	@Bean
 	public List<RequestMatcher> matchers() {
 		final List<RequestMatcher> matchers = new ArrayList<>();
-		matchers.add(new AntPathRequestMatcher("/token", HttpMethod.POST.toString()));
+		matchers.add(new AntPathRequestMatcher("/api/users", HttpMethod.POST.toString()));
+		matchers.add(new AntPathRequestMatcher("/api/login", HttpMethod.POST.toString()));
 		return matchers;
 	}
 

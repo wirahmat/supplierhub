@@ -93,6 +93,10 @@ public class CategoryServiceImpl implements CategoryService{
 		Category category = new Category();
 		BeanUtils.copyProperties(data, category);
 		
+		if(data.getIsActive() == null) {
+			category.setIsActive(true);			
+		}
+		
 		repo.save(category);
 	}
 

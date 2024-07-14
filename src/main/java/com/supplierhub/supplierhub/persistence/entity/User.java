@@ -9,8 +9,8 @@ import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "commodities", uniqueConstraints = { @UniqueConstraint(columnNames = { "code" }) })
-@SQLDelete(sql = "UPDATE commodities SET deleted_at = now() WHERE id=? AND version =?")
+@Table(name = "users", uniqueConstraints = { @UniqueConstraint(columnNames = { "email" }) })
+@SQLDelete(sql = "UPDATE users SET deleted_at = now() WHERE id=? AND version =?")
 @SQLRestriction("deleted_at IS NULL")
 public class User extends MasterEntity {
 

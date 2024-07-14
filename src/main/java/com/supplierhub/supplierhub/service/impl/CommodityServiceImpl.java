@@ -104,6 +104,10 @@ public class CommodityServiceImpl implements CommodityService{
 		Category category = getActiveCategory(data.getItemCategoryId());
 		commodity.setCategory(category);
 		
+		if(data.getIsActive() == null) {
+			commodity.setIsActive(true);			
+		}
+		
 		repo.save(commodity);
 	}
 	

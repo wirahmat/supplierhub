@@ -12,6 +12,8 @@ public class CreateSupplierRequest {
 
 	private String address;
 
+	private Boolean isActive;
+
 	private List<CreateSupplierDetailRequest> details;
 
 	public String getCode() {
@@ -52,6 +54,14 @@ public class CreateSupplierRequest {
 
 	public void setDetails(List<CreateSupplierDetailRequest> details) {
 		this.details = details;
+	}
+
+	public Boolean getIsActive() {
+		return isActive;
+	}
+
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
 	}
 
 }

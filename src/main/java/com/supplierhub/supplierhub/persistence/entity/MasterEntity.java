@@ -9,6 +9,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Version;
 
 @MappedSuperclass
@@ -23,7 +25,7 @@ public class MasterEntity {
 	@CreatedDate
 	private ZonedDateTime createdAt;
 
-	@Column(name = "updated_at", nullable = false)
+	@Column(name = "updated_at")
 	@LastModifiedDate
 	private ZonedDateTime updatedAt;
 
@@ -33,6 +35,17 @@ public class MasterEntity {
 
 	@Column(name = "deleted_at")
 	private ZonedDateTime deletedAt;
+	
+	@PrePersist
+	public void prePersist() {
+		createdAt = ZonedDateTime.now();
+	}
+
+	@PreUpdate
+	public void preUpdate() {
+		updatedAt = ZonedDateTime.now();
+	}
+
 
 	public String getId() {
 		return id;

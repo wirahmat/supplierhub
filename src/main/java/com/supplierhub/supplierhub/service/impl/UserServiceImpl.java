@@ -143,6 +143,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 		String passEncode = passwordEncoder.encode(data.getPassword());
 		user.setPassword(passEncode);
+		user.setIsActive(true);
 
 		repo.save(user);
 	}

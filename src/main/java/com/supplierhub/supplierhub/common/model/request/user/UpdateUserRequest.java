@@ -17,6 +17,8 @@ public class UpdateUserRequest {
 
 	private String password;
 
+	private Boolean isActive;
+
 	public String getId() {
 		return id;
 	}
@@ -55,6 +57,14 @@ public class UpdateUserRequest {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public Boolean getIsActive() {
+		return isActive;
+	}
+
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
 	}
 
 }

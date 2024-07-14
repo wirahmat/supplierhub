@@ -106,6 +106,10 @@ public class SupplierServiceImpl implements SupplierService{
 			}			
 		}
 		
+		if(data.getIsActive() == null) {
+			supplier.setIsActive(true);			
+		}
+		
 		repo.save(supplier);
 	}
 

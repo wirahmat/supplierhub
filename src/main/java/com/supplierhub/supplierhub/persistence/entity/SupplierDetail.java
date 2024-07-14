@@ -20,11 +20,11 @@ import jakarta.persistence.UniqueConstraint;
 @SQLRestriction("deleted_at IS NULL")
 public class SupplierDetail extends MasterEntity {
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "supplier_id", nullable = false)
 	private Supplier supplier;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "commodity_id", nullable = false)
 	private Commodity commodity;
 
