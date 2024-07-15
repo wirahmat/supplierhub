@@ -26,6 +26,8 @@ public interface SupplierDetailService {
 	
 	SupplierDetailResponse getById(String id);
 	
+	SupplierDetail getBySupplierAndCommodity(String supplierId, String commodityId);
+	
 	void add(CreateSupplierDetailRequest data);
 	
 	void edit(UpdateSupplierDetailRequest data);

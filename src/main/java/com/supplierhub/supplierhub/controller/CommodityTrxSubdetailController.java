@@ -43,7 +43,7 @@ public class CommodityTrxSubdetailController {
 
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> add(@RequestBody CreateCommodityTrxSubdetailRequest request) {
-		commodityTrxSubdetailService.add(request);
+		commodityTrxSubdetailService.add(request, null);
 		return ResponseEntity.ok("commodity trx subdetail has been added successfully");
 	}
 

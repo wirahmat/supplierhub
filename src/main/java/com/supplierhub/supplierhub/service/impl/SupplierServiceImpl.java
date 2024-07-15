@@ -100,17 +100,19 @@ public class SupplierServiceImpl implements SupplierService{
 		Supplier supplier = new Supplier();
 		BeanUtils.copyProperties(data, supplier);
 		
-		if(!data.getDetails().isEmpty()) {
-			for(CreateSupplierDetailRequest detailRequest : data.getDetails()) {
-				supplierDetailService.add(detailRequest);
-			}			
-		}
 		
 		if(data.getIsActive() == null) {
 			supplier.setIsActive(true);			
 		}
 		
 		repo.save(supplier);
+		
+		if(!data.getDetails().isEmpty()) {
+			for(CreateSupplierDetailRequest detailRequest : data.getDetails()) {
+				detailRequest.setSupplierId(supplier.getId());
+				supplierDetailService.add(detailRequest);
+			}			
+		}
 	}
 
 	@Override

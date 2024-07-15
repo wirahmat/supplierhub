@@ -1,5 +1,6 @@
 package com.supplierhub.supplierhub.service.impl;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,16 +11,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.supplierhub.supplierhub.common.model.request.commodity.UpdateCommodityRequest;
 import com.supplierhub.supplierhub.common.model.request.commoditytrx.CreateCommodityTrxSubdetailRequest;
 import com.supplierhub.supplierhub.common.model.request.commoditytrx.UpdateCommodityTrxSubdetailRequest;
 import com.supplierhub.supplierhub.common.model.response.CommodityTrxSubdetailResponse;
 import com.supplierhub.supplierhub.persistence.entity.Commodity;
 import com.supplierhub.supplierhub.persistence.entity.CommodityTrxDetail;
 import com.supplierhub.supplierhub.persistence.entity.CommodityTrxSubdetail;
+import com.supplierhub.supplierhub.persistence.entity.SupplierDetail;
 import com.supplierhub.supplierhub.persistence.repository.CommodityTrxSubdetailRepository;
 import com.supplierhub.supplierhub.service.CommodityService;
 import com.supplierhub.supplierhub.service.CommodityTrxDetailService;
 import com.supplierhub.supplierhub.service.CommodityTrxSubdetailService;
+import com.supplierhub.supplierhub.service.SupplierDetailService;
 
 @Service
 public class CommodityTrxSubdetailServiceImpl implements CommodityTrxSubdetailService{
@@ -27,12 +31,15 @@ public class CommodityTrxSubdetailServiceImpl implements CommodityTrxSubdetailSe
 	private final CommodityTrxSubdetailRepository repo;
 	private final CommodityTrxDetailService commodityTrxDetailService;
 	private final CommodityService commodityService;
-
+	private final SupplierDetailService supplierDetailService;
+	
 	public CommodityTrxSubdetailServiceImpl(CommodityTrxSubdetailRepository repo,
-			@Lazy CommodityTrxDetailService commodityTrxDetailService, CommodityService commodityService) {
+			@Lazy CommodityTrxDetailService commodityTrxDetailService, CommodityService commodityService,
+			SupplierDetailService supplierDetailService) {
 		this.repo = repo;
 		this.commodityTrxDetailService = commodityTrxDetailService;
 		this.commodityService = commodityService;
+		this.supplierDetailService = supplierDetailService;
 	}
 
 	@Override
@@ -84,7 +91,7 @@ public class CommodityTrxSubdetailServiceImpl implements CommodityTrxSubdetailSe
 
 	@Override
 	@Transactional
-	public void add(CreateCommodityTrxSubdetailRequest data) {
+	public void add(CreateCommodityTrxSubdetailRequest data, String supplierId) {
 		validateBkNotExist(data.getCommodityTrxDetailId(), data.getCommodityId());
 
 		CommodityTrxSubdetail commodityTrxSubdetail = new CommodityTrxSubdetail();
@@ -95,12 +102,35 @@ public class CommodityTrxSubdetailServiceImpl implements CommodityTrxSubdetailSe
 			commodityTrxSubdetail.setCommodityTrxDetail(commodityTrxDetail);
 		}
 		
+		Commodity commodity = new Commodity();
 		if(data.getCommodityId() != null) {
-			Commodity commodity = getActiveSupplier(data.getCommodityId());
+			commodity = getActiveCommodity(data.getCommodityId());
 			commodityTrxSubdetail.setCommodity(commodity);
 		}
 		
+		BigDecimal totalAmount = BigDecimal.ZERO;
+		if(supplierId != null) {
+			SupplierDetail supplierDetail = supplierDetailService.getBySupplierAndCommodity(supplierId, data.getCommodityId());
+			totalAmount = supplierDetail.getAmount().multiply(BigDecimal.valueOf(data.getQuantity()));
+		}else {
+			Optional<CommodityTrxDetail> commodityTrxDetailOpt = commodityTrxDetailService.getEntityById(data.getCommodityTrxDetailId());
+			if(commodityTrxDetailOpt.isPresent()) {
+				CommodityTrxDetail commodityTrxDetail = commodityTrxDetailOpt.get();
+				SupplierDetail supplierDetail = supplierDetailService.getBySupplierAndCommodity(commodityTrxDetail.getSupplier().getId(), data.getCommodityId());
+				totalAmount = supplierDetail.getAmount().multiply(BigDecimal.valueOf(data.getQuantity()));
+			}
+		}
+		
+		commodityTrxSubdetail.setTotalAmount(totalAmount);
+		
 		repo.save(commodityTrxSubdetail);
+		
+		UpdateCommodityRequest updateCommodityRequest = new UpdateCommodityRequest();
+		updateCommodityRequest.setId(commodity.getId());
+		updateCommodityRequest.setVersion(commodity.getVersion());
+		updateCommodityRequest.setQuantity(commodity.getQuantity() + data.getQuantity());
+		
+		commodityService.edit(updateCommodityRequest);
 	}
 
 	@Override
@@ -145,7 +175,7 @@ public class CommodityTrxSubdetailServiceImpl implements CommodityTrxSubdetailSe
 						"commodity is not exists"));
 	}
 	
-	private Commodity getActiveSupplier(String commodityId) {
+	private Commodity getActiveCommodity(String commodityId) {
 		Commodity commodity = getExistCommodity(commodityId);
 		if(Boolean.FALSE.equals(commodity.getIsActive())) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "supplier is not active");

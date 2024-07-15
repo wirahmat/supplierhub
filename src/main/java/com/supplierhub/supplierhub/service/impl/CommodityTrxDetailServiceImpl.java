@@ -110,7 +110,7 @@ public class CommodityTrxDetailServiceImpl implements CommodityTrxDetailService 
 		
 		for(CreateCommodityTrxSubdetailRequest detail : data.getSubdetails()) {
 			detail.setCommodityTrxDetailId(commodityTrxDetail.getId());
-			commodityTrxSubdetailService.add(detail);
+			commodityTrxSubdetailService.add(detail, commodityTrxDetail.getSupplier().getId());
 		}
 	}
 
@@ -132,7 +132,7 @@ public class CommodityTrxDetailServiceImpl implements CommodityTrxDetailService 
 			
 			for(CreateCommodityTrxSubdetailRequest subdetail : data.getSubdetails()) {
 				subdetail.setCommodityTrxDetailId(commodityTrxDetail.getId());
-				commodityTrxSubdetailService.add(subdetail);
+				commodityTrxSubdetailService.add(subdetail, commodityTrxDetail.getSupplier().getId());
 			}
 		}
 		

@@ -1,13 +1,10 @@
 package com.supplierhub.supplierhub.common.model.request.commoditytrx;
 
-import java.math.BigDecimal;
-
 public class CreateCommodityTrxSubdetailRequest {
 
 	private String commodityTrxDetailId;
 	private String commodityId;
 	private Integer quantity;
-	private BigDecimal totalAmount;
 
 	public String getCommodityTrxDetailId() {
 		return commodityTrxDetailId;
@@ -31,14 +28,6 @@ public class CreateCommodityTrxSubdetailRequest {
 
 	public void setQuantity(Integer quantity) {
 		this.quantity = quantity;
-	}
-
-	public BigDecimal getTotalAmount() {
-		return totalAmount;
-	}
-
-	public void setTotalAmount(BigDecimal totalAmount) {
-		this.totalAmount = totalAmount;
 	}
 
 }

@@ -24,7 +24,7 @@ public interface CommodityTrxSubdetailService {
 	
 	CommodityTrxSubdetailResponse getById(String id);
 	
-	void add(CreateCommodityTrxSubdetailRequest data);
+	void add(CreateCommodityTrxSubdetailRequest data, String supplierId);
 	
 	void edit(UpdateCommodityTrxSubdetailRequest data);
 	

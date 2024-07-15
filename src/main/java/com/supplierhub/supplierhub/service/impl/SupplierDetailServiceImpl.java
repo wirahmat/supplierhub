@@ -87,6 +87,12 @@ public class SupplierDetailServiceImpl implements SupplierDetailService {
 		SupplierDetail commodity = getValidatedEntityById(id);
 		return mapToResponse(commodity);
 	}
+	
+	@Override
+	public SupplierDetail getBySupplierAndCommodity(String supplierId, String commodityId) {
+		return repo.findBySupplierIdAndCommodityId(supplierId, commodityId);
+	}
+
 
 	@Override
 	@Transactional
@@ -186,4 +192,5 @@ public class SupplierDetailServiceImpl implements SupplierDetailService {
 		return supplierDetailResponse;
 	}
 
+	
 }
