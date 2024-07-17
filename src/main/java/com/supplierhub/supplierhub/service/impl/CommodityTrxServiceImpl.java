@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,7 @@ import com.supplierhub.supplierhub.common.model.request.commoditytrx.CreateCommo
 import com.supplierhub.supplierhub.common.model.request.commoditytrx.UpdateCommodityTrxRequest;
 import com.supplierhub.supplierhub.common.model.response.CommodityTrxDetailResponse;
 import com.supplierhub.supplierhub.common.model.response.CommodityTrxResponse;
+import com.supplierhub.supplierhub.persistence.dao.CommodityTrxDao;
 import com.supplierhub.supplierhub.persistence.entity.CommodityTrx;
 import com.supplierhub.supplierhub.persistence.entity.User;
 import com.supplierhub.supplierhub.persistence.repository.CommodityTrxRepository;
@@ -26,26 +28,28 @@ import com.supplierhub.supplierhub.service.UserService;
 public class CommodityTrxServiceImpl implements CommodityTrxService {
 
 	private final CommodityTrxRepository repo;
+	private final CommodityTrxDao dao;
 	private final CommodityTrxDetailService commodityTrxDetailService;
 	private final UserService userService;
 	
-	public CommodityTrxServiceImpl(CommodityTrxRepository repo, CommodityTrxDetailService commodityTrxDetailService,
-			UserService userService) {
+	public CommodityTrxServiceImpl(CommodityTrxRepository repo, CommodityTrxDao dao,
+			@Lazy CommodityTrxDetailService commodityTrxDetailService, UserService userService) {
 		this.repo = repo;
+		this.dao = dao;
 		this.commodityTrxDetailService = commodityTrxDetailService;
 		this.userService = userService;
 	}
 
 	@Override
 	public void validateIdExist(String id) {
-		if (!repo.existsById(id)) {
+		if (!dao.existsById(id)) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "commodity trx id is not found ");
 		}
 	}
 
 	@Override
 	public void validateBkNotExist(String trxNumber, LocalDate trxDate) {
-		if (repo.existsByTrxNumberAndTrxDate(trxNumber, trxDate)) {
+		if (dao.existsByTrxNumberAndTrxDate(trxNumber, trxDate)) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "commodity trx with same code is exists ");
 		}
 	}
@@ -61,14 +65,14 @@ public class CommodityTrxServiceImpl implements CommodityTrxService {
 
 	@Override
 	public List<CommodityTrxResponse> getAll() {
-		List<CommodityTrx> commodityTrxs = repo.findAll();
+		List<CommodityTrx> commodityTrxs = dao.getAll();
 		List<CommodityTrxResponse> commodityTrxResponse = commodityTrxs.stream().map(this::mapToResponse).toList();
 		return commodityTrxResponse;
 	}
 
 	@Override
 	public Optional<CommodityTrx> getEntityById(String id) {
-		return repo.findById(id);
+		return dao.findById(id);
 	}
 
 	@Override

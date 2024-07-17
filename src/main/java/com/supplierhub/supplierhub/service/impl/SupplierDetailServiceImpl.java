@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.supplierhub.supplierhub.common.model.request.supplier.CreateSupplierDetailRequest;
 import com.supplierhub.supplierhub.common.model.request.supplier.UpdateSupplierDetailRequest;
 import com.supplierhub.supplierhub.common.model.response.SupplierDetailResponse;
+import com.supplierhub.supplierhub.persistence.dao.SupplierDetailDao;
 import com.supplierhub.supplierhub.persistence.entity.Commodity;
 import com.supplierhub.supplierhub.persistence.entity.Supplier;
 import com.supplierhub.supplierhub.persistence.entity.SupplierDetail;
@@ -24,26 +26,28 @@ import com.supplierhub.supplierhub.service.SupplierService;
 public class SupplierDetailServiceImpl implements SupplierDetailService {
 
 	private final SupplierDetailRepository repo;
+	private final SupplierDetailDao dao;
 	private final SupplierService supplierService;
 	private final CommodityService commodityService;
 
-	public SupplierDetailServiceImpl(SupplierDetailRepository repo, SupplierService supplierService,
-			CommodityService commodityService) {
+	public SupplierDetailServiceImpl(SupplierDetailRepository repo, SupplierDetailDao dao,
+			@Lazy SupplierService supplierService, CommodityService commodityService) {
 		this.repo = repo;
+		this.dao = dao;
 		this.supplierService = supplierService;
 		this.commodityService = commodityService;
 	}
 
 	@Override
 	public void validateIdExist(String id) {
-		if (!repo.existsById(id)) {
+		if (!dao.existsById(id)) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "supplier detail id is not found ");
 		}
 	}
 
 	@Override
 	public void validateBkNotExist(String supplierId, String commodityId) {
-		if (repo.existsBySupplierIdAndCommodityId(supplierId, commodityId)) {
+		if (dao.existsBySupplierIdAndCommodityId(supplierId, commodityId)) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "supplier detail with same code is exists ");
 		}
 	}
@@ -59,21 +63,21 @@ public class SupplierDetailServiceImpl implements SupplierDetailService {
 
 	@Override
 	public List<SupplierDetailResponse> getAllBySupplier(String supplierId) {
-		List<SupplierDetail> suppliers = repo.findAllBySupplierId(supplierId);
+		List<SupplierDetail> suppliers = dao.findAllBySupplierId(supplierId);
 		List<SupplierDetailResponse> supplierResponses = suppliers.stream().map(this::mapToResponse).toList();
 		return supplierResponses;
 	}
 
 	@Override
 	public List<SupplierDetailResponse> getAllByCommodity(String commodityId) {
-		List<SupplierDetail> suppliers = repo.findAllByCommodityId(commodityId);
+		List<SupplierDetail> suppliers = dao.findAllByCommodityId(commodityId);
 		List<SupplierDetailResponse> supplierResponses = suppliers.stream().map(this::mapToResponse).toList();
 		return supplierResponses;
 	}
 
 	@Override
 	public Optional<SupplierDetail> getEntityById(String id) {
-		return repo.findById(id);
+		return dao.findById(id);
 	}
 
 	@Override
@@ -90,7 +94,7 @@ public class SupplierDetailServiceImpl implements SupplierDetailService {
 	
 	@Override
 	public SupplierDetail getBySupplierAndCommodity(String supplierId, String commodityId) {
-		return repo.findBySupplierIdAndCommodityId(supplierId, commodityId);
+		return dao.findBySupplierIdAndCommodityId(supplierId, commodityId);
 	}
 
 

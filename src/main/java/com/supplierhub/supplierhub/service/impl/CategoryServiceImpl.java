@@ -6,11 +6,13 @@ import java.util.Optional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.supplierhub.supplierhub.common.model.request.category.CreateCategoryRequest;
 import com.supplierhub.supplierhub.common.model.request.category.UpdateCategoryRequest;
 import com.supplierhub.supplierhub.common.model.response.CategoryResponse;
+import com.supplierhub.supplierhub.persistence.dao.CategoryDao;
 import com.supplierhub.supplierhub.persistence.entity.Category;
 import com.supplierhub.supplierhub.persistence.repository.CategoryRepository;
 import com.supplierhub.supplierhub.service.CategoryService;
@@ -20,14 +22,16 @@ import com.supplierhub.supplierhub.service.CategoryService;
 public class CategoryServiceImpl implements CategoryService{
 
 	private final CategoryRepository repo;
+	private final CategoryDao dao;
 
-	public CategoryServiceImpl(CategoryRepository repo) {
+	public CategoryServiceImpl(CategoryRepository repo, CategoryDao dao) {
 		this.repo = repo;
+		this.dao = dao;
 	}
 
 	@Override
 	public void validateIdExist(String id) {
-		if (!repo.existsById(id)) {
+		if (!dao.existsById(id)) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
 					"category id is not found ");
 		}
@@ -46,7 +50,7 @@ public class CategoryServiceImpl implements CategoryService{
 
 	@Override
 	public void validateBkNotExist(String code) {
-		if (repo.existsByCode(code)) {
+		if (dao.existsByCode(code)) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
 					"category with same code is exists ");
 		}
@@ -64,14 +68,14 @@ public class CategoryServiceImpl implements CategoryService{
 
 	@Override
 	public List<CategoryResponse> getAll() {
-		List<Category> categories = repo.findAll();
+		List<Category> categories = dao.getAll();
 		List<CategoryResponse> categoryResponse = categories.stream().map(this::mapToResponse).toList();
 		return categoryResponse;
 	}
 
 	@Override
 	public Optional<Category> getEntityById(String id) {
-		return repo.findById(id);
+		return dao.findById(id);
 	}
 
 	@Override
@@ -87,6 +91,7 @@ public class CategoryServiceImpl implements CategoryService{
 	}
 
 	@Override
+	@Transactional
 	public void add(CreateCategoryRequest data) {
 		validateBkNotExist(data.getCode());
 		
@@ -101,6 +106,7 @@ public class CategoryServiceImpl implements CategoryService{
 	}
 
 	@Override
+	@Transactional
 	public void edit(UpdateCategoryRequest data) {
 		validateIdExist(data.getId());
 		Category category = getValidatedEntityById(data.getId());
@@ -110,11 +116,13 @@ public class CategoryServiceImpl implements CategoryService{
 	}
 
 	@Override
+	@Transactional
 	public void delete(String id) {
 		repo.deleteById(id);
 	}
 
 	@Override
+	@Transactional
 	public void delete(List<String> ids) {
 		for(String id : ids) {
 			delete(id);

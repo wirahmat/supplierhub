@@ -15,6 +15,7 @@ import com.supplierhub.supplierhub.common.model.request.supplier.CreateSupplierR
 import com.supplierhub.supplierhub.common.model.request.supplier.UpdateSupplierRequest;
 import com.supplierhub.supplierhub.common.model.response.SupplierDetailResponse;
 import com.supplierhub.supplierhub.common.model.response.SupplierResponse;
+import com.supplierhub.supplierhub.persistence.dao.SupplierDao;
 import com.supplierhub.supplierhub.persistence.entity.Supplier;
 import com.supplierhub.supplierhub.persistence.repository.SupplierRepository;
 import com.supplierhub.supplierhub.service.SupplierDetailService;
@@ -24,16 +25,18 @@ import com.supplierhub.supplierhub.service.SupplierService;
 public class SupplierServiceImpl implements SupplierService{
 
 	private final SupplierRepository repo;
+	private final SupplierDao dao;
 	private SupplierDetailService supplierDetailService;
 	
-	public SupplierServiceImpl(SupplierRepository repo, @Lazy SupplierDetailService supplierDetailService) {
+	public SupplierServiceImpl(SupplierRepository repo, SupplierDao dao, @Lazy SupplierDetailService supplierDetailService) {
 		this.repo = repo;
+		this.dao = dao;
 		this.supplierDetailService = supplierDetailService;
 	}
 
 	@Override
 	public void validateIdExist(String id) {
-		if (!repo.existsById(id)) {
+		if (!dao.existsById(id)) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
 					"supplier id is not found ");
 		}
@@ -52,7 +55,7 @@ public class SupplierServiceImpl implements SupplierService{
 	
 	@Override
 	public void validateBkNotExist(String code) {
-		if (repo.existsByCode(code)) {
+		if (dao.existsByCode(code)) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
 					"supplier with same code is exists ");
 		}
@@ -70,14 +73,14 @@ public class SupplierServiceImpl implements SupplierService{
 
 	@Override
 	public List<SupplierResponse> getAll() {
-		List<Supplier> suppliers = repo.findAll();
+		List<Supplier> suppliers = dao.getAll();
 		List<SupplierResponse> supplierResponses = suppliers.stream().map(this::mapToResponse).toList();
 		return supplierResponses;
 	}
 
 	@Override
 	public Optional<Supplier> getEntityById(String id) {
-		return repo.findById(id);
+		return dao.findById(id);
 	}
 
 	@Override

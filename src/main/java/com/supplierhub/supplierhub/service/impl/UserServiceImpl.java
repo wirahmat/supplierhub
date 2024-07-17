@@ -25,6 +25,7 @@ import com.supplierhub.supplierhub.common.model.request.user.CreateUserRequest;
 import com.supplierhub.supplierhub.common.model.request.user.UpdateUserRequest;
 import com.supplierhub.supplierhub.common.model.response.LoginResponse;
 import com.supplierhub.supplierhub.common.model.response.UserResponse;
+import com.supplierhub.supplierhub.persistence.dao.UserDao;
 import com.supplierhub.supplierhub.persistence.entity.User;
 import com.supplierhub.supplierhub.persistence.repository.UserRepository;
 import com.supplierhub.supplierhub.service.JwtService;
@@ -34,18 +35,20 @@ import com.supplierhub.supplierhub.service.UserService;
 public class UserServiceImpl implements UserService, UserDetailsService {
 
 	private final UserRepository repo;
+	private final UserDao dao;
 	private final JwtService jwtService;
 	private final PasswordEncoder passwordEncoder;
 
-	public UserServiceImpl(UserRepository repo, JwtService jwtService, PasswordEncoder passwordEncoder) {
+	public UserServiceImpl(UserRepository repo, UserDao dao, JwtService jwtService, PasswordEncoder passwordEncoder) {
 		this.repo = repo;
+		this.dao = dao;
 		this.jwtService = jwtService;
 		this.passwordEncoder = passwordEncoder;
 	}
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Optional<User> userOpt = repo.findByEmail(username);
+		Optional<User> userOpt = dao.findByEmail(username);
 		if (userOpt.isPresent()) {
 			User user = userOpt.get();
 			return new org.springframework.security.core.userdetails.User(username, user.getPassword(),
@@ -79,7 +82,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Override
 	public void validateIdExist(String id) {
-		if (!repo.existsById(id)) {
+		if (!dao.existsById(id)) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "user id is not found ");
 		}
 	}
@@ -95,7 +98,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Override
 	public void validateBkNotExist(String email) {
-		if (repo.existsByEmail(email)) {
+		if (dao.existsByEmail(email)) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "user with same code is exists ");
 		}
 	}
@@ -111,14 +114,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Override
 	public List<UserResponse> getAll() {
-		List<User> users = repo.findAll();
+		List<User> users = dao.getAll();
 		List<UserResponse> userResponse = users.stream().map(this::mapToResponse).toList();
 		return userResponse;
 	}
 
 	@Override
 	public Optional<User> getEntityById(String id) {
-		return repo.findById(id);
+		return dao.findById(id);
 	}
 
 	@Override
@@ -178,12 +181,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Override
 	public LoginResponse login(LoginRequest loginRequest) {
-		Optional<User> userOpt = repo.findByEmail(loginRequest.getEmail());
+		Optional<User> userOpt = dao.findByEmail(loginRequest.getEmail());
 
 		LoginResponse loginResponse = new LoginResponse();
-		if(userOpt.isPresent()) {
+		if (userOpt.isPresent()) {
 			User user = userOpt.get();
-			
+
 			loginResponse.setId(user.getId());
 			loginResponse.setFullName(user.getFullName());
 		}

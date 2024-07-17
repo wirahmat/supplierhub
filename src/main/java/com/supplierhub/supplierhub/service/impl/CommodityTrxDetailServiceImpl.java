@@ -15,6 +15,7 @@ import com.supplierhub.supplierhub.common.model.request.commoditytrx.CreateCommo
 import com.supplierhub.supplierhub.common.model.request.commoditytrx.UpdateCommodityTrxDetailRequest;
 import com.supplierhub.supplierhub.common.model.response.CommodityTrxDetailResponse;
 import com.supplierhub.supplierhub.common.model.response.CommodityTrxSubdetailResponse;
+import com.supplierhub.supplierhub.persistence.dao.CommodityTrxDetailDao;
 import com.supplierhub.supplierhub.persistence.entity.CommodityTrx;
 import com.supplierhub.supplierhub.persistence.entity.CommodityTrxDetail;
 import com.supplierhub.supplierhub.persistence.entity.Supplier;
@@ -28,14 +29,16 @@ import com.supplierhub.supplierhub.service.SupplierService;
 public class CommodityTrxDetailServiceImpl implements CommodityTrxDetailService {
 
 	private final CommodityTrxDetailRepository repo;
+	private final CommodityTrxDetailDao dao;
 	private final CommodityTrxSubdetailService commodityTrxSubdetailService;
 	private final SupplierService supplierService;
 	private final CommodityTrxService commodityTrxService;
 	
-	public CommodityTrxDetailServiceImpl(CommodityTrxDetailRepository repo,
-			CommodityTrxSubdetailService commodityTrxSubdetailService, SupplierService supplierService,
+	public CommodityTrxDetailServiceImpl(CommodityTrxDetailRepository repo, CommodityTrxDetailDao dao,
+			@Lazy CommodityTrxSubdetailService commodityTrxSubdetailService, SupplierService supplierService,
 			@Lazy CommodityTrxService commodityTrxService) {
 		this.repo = repo;
+		this.dao = dao;
 		this.commodityTrxSubdetailService = commodityTrxSubdetailService;
 		this.supplierService = supplierService;
 		this.commodityTrxService = commodityTrxService;
@@ -43,14 +46,14 @@ public class CommodityTrxDetailServiceImpl implements CommodityTrxDetailService 
 
 	@Override
 	public void validateIdExist(String id) {
-		if (!repo.existsById(id)) {
+		if (!dao.existsById(id)) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "commodity trx detail id is not found ");
 		}
 	}
 
 	@Override
 	public void validateBkNotExist(String commodityTrxId, String supplierId) {
-		if (repo.existsByCommodityTrxIdAndSupplierId(commodityTrxId, supplierId)) {
+		if (dao.existsByCommodityTrxIdAndSupplierId(commodityTrxId, supplierId)) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "commodity trx detail with same code is exists ");
 		}
 	}
@@ -66,14 +69,14 @@ public class CommodityTrxDetailServiceImpl implements CommodityTrxDetailService 
 
 	@Override
 	public List<CommodityTrxDetailResponse> getAllByHeaderId(String headerId) {
-		List<CommodityTrxDetail> commodityTrxDetails = repo.findAllByCommodityTrxId(headerId);
+		List<CommodityTrxDetail> commodityTrxDetails = dao.getAllByHeaderId(headerId);
 		List<CommodityTrxDetailResponse> commodityTrxDetailResponses = commodityTrxDetails.stream().map(this::mapToResponse).toList();
 		return commodityTrxDetailResponses;
 	}
 
 	@Override
 	public Optional<CommodityTrxDetail> getEntityById(String id) {
-		return repo.findById(id);
+		return dao.findById(id);
 	}
 
 	@Override
