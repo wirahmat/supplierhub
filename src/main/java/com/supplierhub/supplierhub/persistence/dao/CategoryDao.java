@@ -15,4 +15,9 @@ public interface CategoryDao {
 	
 	Optional<Category> findById(String id);
 	
+	Category save(Category category);
+	
+	Category saveAndFlush(Category category);
+
+	boolean delete(Category category);
 }

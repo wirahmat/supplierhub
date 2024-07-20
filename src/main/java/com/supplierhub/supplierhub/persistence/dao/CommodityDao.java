@@ -15,4 +15,9 @@ public interface CommodityDao {
 
 	Optional<Commodity> findById(String id);
 
+	Commodity save(Commodity commodity);
+
+	Commodity saveAndFlush(Commodity commodity);
+
+	boolean delete(Commodity commodity);
 }

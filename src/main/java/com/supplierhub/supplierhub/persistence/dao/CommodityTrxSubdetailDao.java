@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.supplierhub.supplierhub.persistence.entity.CommodityTrxSubdetail;
+import com.supplierhub.supplierhub.persistence.entity.CommodityTrxSubdetail;
 
 public interface CommodityTrxSubdetailDao {
 
@@ -16,4 +17,10 @@ public interface CommodityTrxSubdetailDao {
 	Optional<CommodityTrxSubdetail> findById(String id);
 	
 	Long getCount();
+	
+	CommodityTrxSubdetail save(CommodityTrxSubdetail commodityTrxSubdetail);
+
+	CommodityTrxSubdetail saveAndFlush(CommodityTrxSubdetail commodityTrxSubdetail);
+
+	boolean delete(CommodityTrxSubdetail commodityTrxSubdetail);
 }

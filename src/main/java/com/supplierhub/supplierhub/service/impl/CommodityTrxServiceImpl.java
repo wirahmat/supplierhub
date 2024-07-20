@@ -19,7 +19,6 @@ import com.supplierhub.supplierhub.common.model.response.CommodityTrxResponse;
 import com.supplierhub.supplierhub.persistence.dao.CommodityTrxDao;
 import com.supplierhub.supplierhub.persistence.entity.CommodityTrx;
 import com.supplierhub.supplierhub.persistence.entity.User;
-import com.supplierhub.supplierhub.persistence.repository.CommodityTrxRepository;
 import com.supplierhub.supplierhub.service.CommodityTrxDetailService;
 import com.supplierhub.supplierhub.service.CommodityTrxService;
 import com.supplierhub.supplierhub.service.UserService;
@@ -27,14 +26,12 @@ import com.supplierhub.supplierhub.service.UserService;
 @Service
 public class CommodityTrxServiceImpl implements CommodityTrxService {
 
-	private final CommodityTrxRepository repo;
 	private final CommodityTrxDao dao;
 	private final CommodityTrxDetailService commodityTrxDetailService;
 	private final UserService userService;
 	
-	public CommodityTrxServiceImpl(CommodityTrxRepository repo, CommodityTrxDao dao,
+	public CommodityTrxServiceImpl(CommodityTrxDao dao,
 			@Lazy CommodityTrxDetailService commodityTrxDetailService, UserService userService) {
-		this.repo = repo;
 		this.dao = dao;
 		this.commodityTrxDetailService = commodityTrxDetailService;
 		this.userService = userService;
@@ -100,7 +97,7 @@ public class CommodityTrxServiceImpl implements CommodityTrxService {
 		String trxNumber = data.getTrxNumber();
 		
 		if(data.getTrxNumber() == null) {
-			Long countNumber = repo.getCount() + 1;
+			Long countNumber = dao.getCount() + 1;
 			trxNumber = countNumber.toString();
 		}
 		
@@ -110,7 +107,7 @@ public class CommodityTrxServiceImpl implements CommodityTrxService {
 		User user = getActiveUser(data.getUserId());
 		commodityTrx.setUser(user);
 
-		repo.save(commodityTrx);
+		dao.save(commodityTrx);
 		
 		for(CreateCommodityTrxDetailRequest detail : data.getDetails()) {
 			detail.setCommodityTrxId(commodityTrx.getId());
@@ -131,13 +128,15 @@ public class CommodityTrxServiceImpl implements CommodityTrxService {
 			commodityTrx.setUser(user);
 		}
 		
-		repo.saveAndFlush(commodityTrx);
+		dao.saveAndFlush(commodityTrx);
 	}
 
 	@Override
 	@Transactional
 	public void delete(String id) {
-		repo.deleteById(id);
+		validateIdExist(id);
+		CommodityTrx commodityTrx = getValidatedEntityById(id);
+		dao.delete(commodityTrx);
 	}
 
 	@Override

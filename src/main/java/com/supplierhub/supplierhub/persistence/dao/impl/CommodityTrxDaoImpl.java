@@ -1,7 +1,6 @@
 package com.supplierhub.supplierhub.persistence.dao.impl;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import com.supplierhub.supplierhub.persistence.dao.CommodityTrxDao;
 import com.supplierhub.supplierhub.persistence.entity.CommodityTrx;
-import com.supplierhub.supplierhub.persistence.entity.Supplier;
 import com.supplierhub.supplierhub.persistence.entity.User;
 
 import jakarta.persistence.EntityManager;
@@ -114,5 +112,36 @@ public class CommodityTrxDaoImpl implements CommodityTrxDao{
 		}
 		
 		return commodityTrx;
+	}
+
+	@Override
+	public CommodityTrx save(CommodityTrx commodityTrx) {
+		if (commodityTrx.getId() != null) {
+			commodityTrx = entityManager.merge(commodityTrx);
+		} else {
+			entityManager.persist(commodityTrx);
+		}
+
+		return commodityTrx;
+	}
+
+	@Override
+	public CommodityTrx saveAndFlush(CommodityTrx commodityTrx) {
+		CommodityTrx savedEntity = save(commodityTrx);
+
+		if (entityManager.contains(savedEntity)) {
+			entityManager.flush();
+		}
+
+		return commodityTrx;
+	}
+
+	@Override
+	public boolean delete(CommodityTrx commodityTrx) {
+		if (commodityTrx != null) {
+			entityManager.remove(commodityTrx);
+			return true;
+		}
+		return false;
 	}
 }

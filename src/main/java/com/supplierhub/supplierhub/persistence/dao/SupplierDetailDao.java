@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.supplierhub.supplierhub.persistence.entity.SupplierDetail;
+import com.supplierhub.supplierhub.persistence.entity.SupplierDetail;
 
 public interface SupplierDetailDao {
 
@@ -19,4 +20,9 @@ public interface SupplierDetailDao {
 	
 	Optional<SupplierDetail> findById(String id);
 	
+	SupplierDetail save(SupplierDetail supplierDetail);
+
+	SupplierDetail saveAndFlush(SupplierDetail supplierDetail);
+
+	boolean delete(SupplierDetail supplierDetail);
 }

@@ -16,19 +16,16 @@ import com.supplierhub.supplierhub.common.model.response.CommodityResponse;
 import com.supplierhub.supplierhub.persistence.dao.CommodityDao;
 import com.supplierhub.supplierhub.persistence.entity.Category;
 import com.supplierhub.supplierhub.persistence.entity.Commodity;
-import com.supplierhub.supplierhub.persistence.repository.CommodityRepository;
 import com.supplierhub.supplierhub.service.CategoryService;
 import com.supplierhub.supplierhub.service.CommodityService;
 
 @Service
 public class CommodityServiceImpl implements CommodityService {
 
-	private final CommodityRepository repo;
 	private final CategoryService categoryService;
 	private final CommodityDao dao;
 
-	public CommodityServiceImpl(CommodityRepository repo, CategoryService categoryService, CommodityDao dao) {
-		this.repo = repo;
+	public CommodityServiceImpl(CategoryService categoryService, CommodityDao dao) {
 		this.categoryService = categoryService;
 		this.dao = dao;
 	}
@@ -106,7 +103,7 @@ public class CommodityServiceImpl implements CommodityService {
 			commodity.setIsActive(true);
 		}
 
-		repo.save(commodity);
+		dao.save(commodity);
 	}
 
 	@Override
@@ -122,13 +119,15 @@ public class CommodityServiceImpl implements CommodityService {
 			commodity.setCategory(category);
 		}
 
-		repo.saveAndFlush(commodity);
+		dao.saveAndFlush(commodity);
 	}
 
 	@Override
 	@Transactional
 	public void delete(String id) {
-		repo.deleteById(id);
+		validateIdExist(id);
+		Commodity commodity = getValidatedEntityById(id);
+		dao.delete(commodity);
 	}
 
 	@Override

@@ -17,19 +17,16 @@ import com.supplierhub.supplierhub.common.model.response.SupplierDetailResponse;
 import com.supplierhub.supplierhub.common.model.response.SupplierResponse;
 import com.supplierhub.supplierhub.persistence.dao.SupplierDao;
 import com.supplierhub.supplierhub.persistence.entity.Supplier;
-import com.supplierhub.supplierhub.persistence.repository.SupplierRepository;
 import com.supplierhub.supplierhub.service.SupplierDetailService;
 import com.supplierhub.supplierhub.service.SupplierService;
 
 @Service
 public class SupplierServiceImpl implements SupplierService{
 
-	private final SupplierRepository repo;
 	private final SupplierDao dao;
 	private SupplierDetailService supplierDetailService;
 	
-	public SupplierServiceImpl(SupplierRepository repo, SupplierDao dao, @Lazy SupplierDetailService supplierDetailService) {
-		this.repo = repo;
+	public SupplierServiceImpl(SupplierDao dao, @Lazy SupplierDetailService supplierDetailService) {
 		this.dao = dao;
 		this.supplierDetailService = supplierDetailService;
 	}
@@ -108,7 +105,7 @@ public class SupplierServiceImpl implements SupplierService{
 			supplier.setIsActive(true);			
 		}
 		
-		repo.save(supplier);
+		dao.save(supplier);
 		
 		if(!data.getDetails().isEmpty()) {
 			for(CreateSupplierDetailRequest detailRequest : data.getDetails()) {
@@ -125,13 +122,15 @@ public class SupplierServiceImpl implements SupplierService{
 		Supplier supplier = getValidatedEntityById(data.getId());
 		validateVersion(supplier.getId(), data.getVersion());
 		BeanUtils.copyProperties(data, supplier);
-		repo.saveAndFlush(supplier);
+		dao.saveAndFlush(supplier);
 	}
 
 	@Override
 	@Transactional
 	public void delete(String id) {
-		repo.deleteById(id);
+		validateIdExist(id);
+		Supplier supplier = getValidatedEntityById(id);
+		dao.delete(supplier);
 	}
 
 	@Override

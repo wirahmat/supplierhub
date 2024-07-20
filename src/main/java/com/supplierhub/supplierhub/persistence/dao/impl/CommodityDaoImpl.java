@@ -117,4 +117,34 @@ public class CommodityDaoImpl implements CommodityDao{
 		
 		return commodity;
 	}
+
+	@Override
+	public Commodity save(Commodity commodity) {
+		if (commodity.getId() != null) {
+			commodity = entityManager.merge(commodity);
+		} else {
+			entityManager.persist(commodity);
+		}
+
+		return commodity;
+	}
+
+	@Override
+	public Commodity saveAndFlush(Commodity commodity) {
+		Commodity savedEntity = save(commodity);
+
+		if (entityManager.contains(savedEntity)) {
+			entityManager.flush();
+		}
+
+		return commodity;
+	}
+
+	@Override
+	public boolean delete(Commodity commodity) {
+		if (commodity != null) {
+			commodity.setDeletedAt(ZonedDateTime.now());
+		}
+		return false;
+	}
 }

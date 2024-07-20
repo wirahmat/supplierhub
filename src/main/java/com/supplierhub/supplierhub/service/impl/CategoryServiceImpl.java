@@ -14,53 +14,44 @@ import com.supplierhub.supplierhub.common.model.request.category.UpdateCategoryR
 import com.supplierhub.supplierhub.common.model.response.CategoryResponse;
 import com.supplierhub.supplierhub.persistence.dao.CategoryDao;
 import com.supplierhub.supplierhub.persistence.entity.Category;
-import com.supplierhub.supplierhub.persistence.repository.CategoryRepository;
 import com.supplierhub.supplierhub.service.CategoryService;
 
-
 @Service
-public class CategoryServiceImpl implements CategoryService{
+public class CategoryServiceImpl implements CategoryService {
 
-	private final CategoryRepository repo;
 	private final CategoryDao dao;
 
-	public CategoryServiceImpl(CategoryRepository repo, CategoryDao dao) {
-		this.repo = repo;
+	public CategoryServiceImpl(CategoryDao dao) {
 		this.dao = dao;
 	}
 
 	@Override
 	public void validateIdExist(String id) {
 		if (!dao.existsById(id)) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-					"category id is not found ");
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "category id is not found ");
 		}
 	}
 
 	@Override
 	public void validateIdActive(String id) {
 		Category category = getEntityById(id)
-				.orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
-						"category id is not found "));
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "category id is not found "));
 		if (Boolean.FALSE.equals(category.getIsActive())) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-					"category is not active");
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "category is not active");
 		}
 	}
 
 	@Override
 	public void validateBkNotExist(String code) {
 		if (dao.existsByCode(code)) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-					"category with same code is exists ");
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "category with same code is exists ");
 		}
 	}
 
 	@Override
 	public void validateVersion(String id, Long version) {
 		Category category = getEntityById(id)
-				.orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
-					"category is not active" ));
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "category is not active"));
 		if (!category.getVersion().equals(version)) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "category version does not matched");
 		}
@@ -80,8 +71,8 @@ public class CategoryServiceImpl implements CategoryService{
 
 	@Override
 	public Category getValidatedEntityById(String id) {
-		return getEntityById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
-				"category is not exists"));
+		return getEntityById(id)
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "category is not exists"));
 	}
 
 	@Override
@@ -94,15 +85,15 @@ public class CategoryServiceImpl implements CategoryService{
 	@Transactional
 	public void add(CreateCategoryRequest data) {
 		validateBkNotExist(data.getCode());
-		
+
 		Category category = new Category();
 		BeanUtils.copyProperties(data, category);
-		
-		if(data.getIsActive() == null) {
-			category.setIsActive(true);			
+
+		if (data.getIsActive() == null) {
+			category.setIsActive(true);
 		}
-		
-		repo.save(category);
+
+		dao.save(category);
 	}
 
 	@Override
@@ -112,27 +103,29 @@ public class CategoryServiceImpl implements CategoryService{
 		Category category = getValidatedEntityById(data.getId());
 		validateVersion(category.getId(), data.getVersion());
 		BeanUtils.copyProperties(data, category);
-		repo.saveAndFlush(category);
+		dao.saveAndFlush(category);
 	}
 
 	@Override
 	@Transactional
 	public void delete(String id) {
-		repo.deleteById(id);
+		validateIdExist(id);
+		Category category = getValidatedEntityById(id);
+		dao.delete(category);
 	}
 
 	@Override
 	@Transactional
 	public void delete(List<String> ids) {
-		for(String id : ids) {
+		for (String id : ids) {
 			delete(id);
 		}
 	}
-	
+
 	private CategoryResponse mapToResponse(Category category) {
 		CategoryResponse categoryResponse = new CategoryResponse();
 		BeanUtils.copyProperties(category, categoryResponse);
-		
+
 		return categoryResponse;
 	}
 }

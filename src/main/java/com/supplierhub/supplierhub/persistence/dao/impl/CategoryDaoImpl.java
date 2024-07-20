@@ -102,5 +102,36 @@ public class CategoryDaoImpl implements CategoryDao{
 		
 		return category;
 	}
-	
+
+	@Override
+	public Category save(Category category) {
+		if (category.getId() != null) {
+			category = entityManager.merge(category);
+		} else {
+			entityManager.persist(category);
+		}
+
+		return category;
+	}
+
+	@Override
+	public Category saveAndFlush(Category category) {
+		Category savedEntity = save(category);
+
+		if (entityManager.contains(savedEntity)) {
+			entityManager.flush();
+		}
+
+		return category;
+	}
+
+	@Override
+	public boolean delete(Category category) {
+		if (category != null) {
+			entityManager.remove(category);
+			return true;
+		}
+		return false;
+	}
+
 }

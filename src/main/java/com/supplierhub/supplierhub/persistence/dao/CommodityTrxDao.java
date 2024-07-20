@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.supplierhub.supplierhub.persistence.entity.CommodityTrx;
+import com.supplierhub.supplierhub.persistence.entity.CommodityTrx;
 
 public interface CommodityTrxDao {
 
@@ -17,4 +18,10 @@ public interface CommodityTrxDao {
 	Optional<CommodityTrx> findById(String id);
 	
 	Long getCount();
+	
+	CommodityTrx save(CommodityTrx commodityTrx);
+
+	CommodityTrx saveAndFlush(CommodityTrx commodityTrx);
+
+	boolean delete(CommodityTrx commodityTrx);
 }

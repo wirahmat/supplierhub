@@ -17,7 +17,6 @@ import com.supplierhub.supplierhub.persistence.dao.SupplierDetailDao;
 import com.supplierhub.supplierhub.persistence.entity.Commodity;
 import com.supplierhub.supplierhub.persistence.entity.Supplier;
 import com.supplierhub.supplierhub.persistence.entity.SupplierDetail;
-import com.supplierhub.supplierhub.persistence.repository.SupplierDetailRepository;
 import com.supplierhub.supplierhub.service.CommodityService;
 import com.supplierhub.supplierhub.service.SupplierDetailService;
 import com.supplierhub.supplierhub.service.SupplierService;
@@ -25,14 +24,12 @@ import com.supplierhub.supplierhub.service.SupplierService;
 @Service
 public class SupplierDetailServiceImpl implements SupplierDetailService {
 
-	private final SupplierDetailRepository repo;
 	private final SupplierDetailDao dao;
 	private final SupplierService supplierService;
 	private final CommodityService commodityService;
 
-	public SupplierDetailServiceImpl(SupplierDetailRepository repo, SupplierDetailDao dao,
+	public SupplierDetailServiceImpl(SupplierDetailDao dao,
 			@Lazy SupplierService supplierService, CommodityService commodityService) {
-		this.repo = repo;
 		this.dao = dao;
 		this.supplierService = supplierService;
 		this.commodityService = commodityService;
@@ -112,7 +109,7 @@ public class SupplierDetailServiceImpl implements SupplierDetailService {
 		Commodity commodity = getActiveCommodity(data.getCommodityId());
 		supplierDetail.setCommodity(commodity);
 		
-		repo.save(supplierDetail);
+		dao.save(supplierDetail);
 	}
 
 	@Override
@@ -133,13 +130,14 @@ public class SupplierDetailServiceImpl implements SupplierDetailService {
 			supplierDetail.setCommodity(commodity);			
 		}
 		
-		repo.save(supplierDetail);
+		dao.save(supplierDetail);
 	}
 
 	@Override
 	@Transactional
 	public void delete(String id) {
-		repo.deleteById(id);
+		SupplierDetail supplierDetail = getValidatedEntityById(id);
+		dao.delete(supplierDetail);
 	}
 
 	@Override

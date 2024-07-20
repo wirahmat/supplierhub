@@ -17,4 +17,10 @@ public interface CommodityTrxDetailDao {
 	
 	Long getCount();
 	
+	CommodityTrxDetail save(CommodityTrxDetail commodityTrxDetail);
+
+	CommodityTrxDetail saveAndFlush(CommodityTrxDetail commodityTrxDetail);
+
+	boolean delete(CommodityTrxDetail commodityTrxDetail);
+	
 }

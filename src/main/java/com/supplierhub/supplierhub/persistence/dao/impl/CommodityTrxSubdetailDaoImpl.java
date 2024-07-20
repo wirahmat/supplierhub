@@ -119,6 +119,37 @@ public class CommodityTrxSubdetailDaoImpl implements CommodityTrxSubdetailDao{
 		
 		return commodityTrxSubdetail;
 	}
+
+	@Override
+	public CommodityTrxSubdetail save(CommodityTrxSubdetail commodityTrxSubdetail) {
+		if (commodityTrxSubdetail.getId() != null) {
+			commodityTrxSubdetail = entityManager.merge(commodityTrxSubdetail);
+		} else {
+			entityManager.persist(commodityTrxSubdetail);
+		}
+
+		return commodityTrxSubdetail;
+	}
+
+	@Override
+	public CommodityTrxSubdetail saveAndFlush(CommodityTrxSubdetail commodityTrxSubdetail) {
+		CommodityTrxSubdetail savedEntity = save(commodityTrxSubdetail);
+
+		if (entityManager.contains(savedEntity)) {
+			entityManager.flush();
+		}
+
+		return commodityTrxSubdetail;
+	}
+
+	@Override
+	public boolean delete(CommodityTrxSubdetail commodityTrxSubdetail) {
+		if (commodityTrxSubdetail != null) {
+			entityManager.remove(commodityTrxSubdetail);
+			return true;
+		}
+		return false;
+	}
 	
 	
 }

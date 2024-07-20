@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.supplierhub.supplierhub.persistence.entity.Supplier;
+import com.supplierhub.supplierhub.persistence.entity.Supplier;
 
 public interface SupplierDao {
 
@@ -18,4 +19,10 @@ public interface SupplierDao {
 	Optional<Supplier> findByCode(String code);
 	
 	Long getCount();
+	
+	Supplier save(Supplier supplier);
+
+	Supplier saveAndFlush(Supplier supplier);
+
+	boolean delete(Supplier supplier);
 }

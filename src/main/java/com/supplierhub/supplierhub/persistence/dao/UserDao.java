@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.supplierhub.supplierhub.persistence.entity.User;
+import com.supplierhub.supplierhub.persistence.entity.User;
 
 public interface UserDao{
 
@@ -16,4 +17,10 @@ public interface UserDao{
 	Optional<User> findById(String id);
 	
 	Optional<User> findByEmail(String email);
+	
+	User save(User user);
+
+	User saveAndFlush(User user);
+
+	boolean delete(User user);
 }

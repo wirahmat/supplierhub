@@ -136,5 +136,36 @@ public class SupplierDaoImpl implements SupplierDao{
 		
 		return supplier;
 	}
+
+	@Override
+	public Supplier save(Supplier supplier) {
+		if (supplier.getId() != null) {
+			supplier = entityManager.merge(supplier);
+		} else {
+			entityManager.persist(supplier);
+		}
+
+		return supplier;
+	}
+
+	@Override
+	public Supplier saveAndFlush(Supplier supplier) {
+		Supplier savedEntity = save(supplier);
+
+		if (entityManager.contains(savedEntity)) {
+			entityManager.flush();
+		}
+
+		return supplier;
+	}
+
+	@Override
+	public boolean delete(Supplier supplier) {
+		if (supplier != null) {
+			entityManager.remove(supplier);
+			return true;
+		}
+		return false;
+	}
 	
 }

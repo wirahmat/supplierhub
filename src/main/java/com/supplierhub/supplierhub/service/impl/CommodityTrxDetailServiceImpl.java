@@ -19,7 +19,6 @@ import com.supplierhub.supplierhub.persistence.dao.CommodityTrxDetailDao;
 import com.supplierhub.supplierhub.persistence.entity.CommodityTrx;
 import com.supplierhub.supplierhub.persistence.entity.CommodityTrxDetail;
 import com.supplierhub.supplierhub.persistence.entity.Supplier;
-import com.supplierhub.supplierhub.persistence.repository.CommodityTrxDetailRepository;
 import com.supplierhub.supplierhub.service.CommodityTrxDetailService;
 import com.supplierhub.supplierhub.service.CommodityTrxService;
 import com.supplierhub.supplierhub.service.CommodityTrxSubdetailService;
@@ -28,16 +27,14 @@ import com.supplierhub.supplierhub.service.SupplierService;
 @Service
 public class CommodityTrxDetailServiceImpl implements CommodityTrxDetailService {
 
-	private final CommodityTrxDetailRepository repo;
 	private final CommodityTrxDetailDao dao;
 	private final CommodityTrxSubdetailService commodityTrxSubdetailService;
 	private final SupplierService supplierService;
 	private final CommodityTrxService commodityTrxService;
 	
-	public CommodityTrxDetailServiceImpl(CommodityTrxDetailRepository repo, CommodityTrxDetailDao dao,
+	public CommodityTrxDetailServiceImpl(CommodityTrxDetailDao dao,
 			@Lazy CommodityTrxSubdetailService commodityTrxSubdetailService, SupplierService supplierService,
 			@Lazy CommodityTrxService commodityTrxService) {
-		this.repo = repo;
 		this.dao = dao;
 		this.commodityTrxSubdetailService = commodityTrxSubdetailService;
 		this.supplierService = supplierService;
@@ -109,7 +106,7 @@ public class CommodityTrxDetailServiceImpl implements CommodityTrxDetailService 
 			commodityTrxDetail.setSupplier(supplier);
 		}
 
-		repo.save(commodityTrxDetail);
+		dao.save(commodityTrxDetail);
 		
 		for(CreateCommodityTrxSubdetailRequest detail : data.getSubdetails()) {
 			detail.setCommodityTrxDetailId(commodityTrxDetail.getId());
@@ -139,13 +136,15 @@ public class CommodityTrxDetailServiceImpl implements CommodityTrxDetailService 
 			}
 		}
 		
-		repo.saveAndFlush(commodityTrxDetail);
+		dao.saveAndFlush(commodityTrxDetail);
 	}
 
 	@Override
 	@Transactional
 	public void delete(String id) {
-		repo.deleteById(id);
+		validateIdExist(id);
+		CommodityTrxDetail commodityTrxDetail = getValidatedEntityById(id);
+		dao.delete(commodityTrxDetail);
 	}
 
 	@Override

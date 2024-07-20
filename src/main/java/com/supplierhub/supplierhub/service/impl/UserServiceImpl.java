@@ -27,20 +27,17 @@ import com.supplierhub.supplierhub.common.model.response.LoginResponse;
 import com.supplierhub.supplierhub.common.model.response.UserResponse;
 import com.supplierhub.supplierhub.persistence.dao.UserDao;
 import com.supplierhub.supplierhub.persistence.entity.User;
-import com.supplierhub.supplierhub.persistence.repository.UserRepository;
 import com.supplierhub.supplierhub.service.JwtService;
 import com.supplierhub.supplierhub.service.UserService;
 
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
 
-	private final UserRepository repo;
 	private final UserDao dao;
 	private final JwtService jwtService;
 	private final PasswordEncoder passwordEncoder;
 
-	public UserServiceImpl(UserRepository repo, UserDao dao, JwtService jwtService, PasswordEncoder passwordEncoder) {
-		this.repo = repo;
+	public UserServiceImpl(UserDao dao, JwtService jwtService, PasswordEncoder passwordEncoder) {
 		this.dao = dao;
 		this.jwtService = jwtService;
 		this.passwordEncoder = passwordEncoder;
@@ -148,7 +145,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		user.setPassword(passEncode);
 		user.setIsActive(true);
 
-		repo.save(user);
+		dao.save(user);
 	}
 
 	@Override
@@ -162,13 +159,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		String passEncode = passwordEncoder.encode(data.getPassword());
 		user.setPassword(passEncode);
 
-		repo.saveAndFlush(user);
+		dao.saveAndFlush(user);
 	}
 
 	@Override
 	@Transactional
 	public void delete(String id) {
-		repo.deleteById(id);
+		validateIdExist(id);
+		User user = getValidatedEntityById(id);
+		dao.delete(user);
 	}
 
 	@Override

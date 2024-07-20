@@ -115,4 +115,35 @@ public class UserDaoImpl implements UserDao{
 		return user;
 	}
 
+	@Override
+	public User save(User user) {
+		if (user.getId() != null) {
+			user = entityManager.merge(user);
+		} else {
+			entityManager.persist(user);
+		}
+
+		return user;
+	}
+
+	@Override
+	public User saveAndFlush(User user) {
+		User savedEntity = save(user);
+
+		if (entityManager.contains(savedEntity)) {
+			entityManager.flush();
+		}
+
+		return user;
+	}
+
+	@Override
+	public boolean delete(User user) {
+		if (user != null) {
+			entityManager.remove(user);
+			return true;
+		}
+		return false;
+	}
+
 }
