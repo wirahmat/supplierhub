@@ -1,6 +1,6 @@
 package com.supplierhub.supplierhub.persistence.entity;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.annotation.CreatedDate;
@@ -23,27 +23,27 @@ public class MasterEntity {
 
 	@Column(name = "created_at", nullable = false, updatable = false)
 	@CreatedDate
-	private ZonedDateTime createdAt;
+	private LocalDateTime createdAt;
 
 	@Column(name = "updated_at")
 	@LastModifiedDate
-	private ZonedDateTime updatedAt;
+	private LocalDateTime updatedAt;
 
 	@Column(name = "version")
 	@Version
 	private Long version;
 
 	@Column(name = "deleted_at")
-	private ZonedDateTime deletedAt;
+	private LocalDateTime deletedAt;
 	
 	@PrePersist
 	public void prePersist() {
-		createdAt = ZonedDateTime.now();
+		createdAt = LocalDateTime.now();
 	}
 
 	@PreUpdate
 	public void preUpdate() {
-		updatedAt = ZonedDateTime.now();
+		updatedAt = LocalDateTime.now();
 	}
 
 
@@ -55,19 +55,19 @@ public class MasterEntity {
 		this.id = id;
 	}
 
-	public ZonedDateTime getCreatedAt() {
+	public LocalDateTime getCreatedAt() {
 		return createdAt;
 	}
 
-	public void setCreatedAt(ZonedDateTime createdAt) {
+	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
 	}
 
-	public ZonedDateTime getUpdatedAt() {
+	public LocalDateTime getUpdatedAt() {
 		return updatedAt;
 	}
 
-	public void setUpdatedAt(ZonedDateTime updatedAt) {
+	public void setUpdatedAt(LocalDateTime updatedAt) {
 		this.updatedAt = updatedAt;
 	}
 
@@ -79,11 +79,11 @@ public class MasterEntity {
 		this.version = version;
 	}
 
-	public ZonedDateTime getDeletedAt() {
+	public LocalDateTime getDeletedAt() {
 		return deletedAt;
 	}
 
-	public void setDeletedAt(ZonedDateTime deletedAt) {
+	public void setDeletedAt(LocalDateTime deletedAt) {
 		this.deletedAt = deletedAt;
 	}
 	

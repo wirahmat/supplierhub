@@ -77,31 +77,19 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		return auth.getPrincipal().toString();
 	}
 
-	@Override
-	public void validateIdExist(String id) {
+	private void validateIdExist(String id) {
 		if (!dao.existsById(id)) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "user id is not found ");
 		}
 	}
 
-	@Override
-	public void validateIdActive(String id) {
-		User user = getEntityById(id)
-				.orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "user id is not found "));
-		if (Boolean.FALSE.equals(user.getIsActive())) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "user is not active");
-		}
-	}
-
-	@Override
-	public void validateBkNotExist(String email) {
+	private void validateBkNotExist(String email) {
 		if (dao.existsByEmail(email)) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "user with same code is exists ");
 		}
 	}
 
-	@Override
-	public void validateVersion(String id, Long version) {
+	private void validateVersion(String id, Long version) {
 		User user = getEntityById(id)
 				.orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "user is not active"));
 		if (!user.getVersion().equals(version)) {

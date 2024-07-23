@@ -1,6 +1,5 @@
 package com.supplierhub.supplierhub.service;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,12 +9,6 @@ import com.supplierhub.supplierhub.common.model.response.CommodityTrxResponse;
 import com.supplierhub.supplierhub.persistence.entity.CommodityTrx;
 
 public interface CommodityTrxService {
-
-	void validateIdExist(String id);
-
-	void validateBkNotExist(String trxNumber, LocalDate trxDate);
-
-	void validateVersion(String id, Long version);
 
 	List<CommodityTrxResponse> getAll();
 

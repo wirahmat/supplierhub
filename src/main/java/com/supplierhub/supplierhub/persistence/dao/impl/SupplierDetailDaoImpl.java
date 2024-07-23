@@ -1,7 +1,8 @@
 package com.supplierhub.supplierhub.persistence.dao.impl;
 
 import java.math.BigDecimal;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -117,10 +118,10 @@ public class SupplierDetailDaoImpl implements SupplierDetailDao{
 		supplierDetail.setCommodity(commodity);
 		
 		supplierDetail.setAmount((BigDecimal)objArr[3]);			
-		supplierDetail.setCreatedAt(ZonedDateTime.parse(objArr[4].toString()));
+		supplierDetail.setCreatedAt(LocalDateTime.parse(objArr[4].toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS")));
 		
 		if(objArr[5] != null) {
-			supplierDetail.setUpdatedAt(ZonedDateTime.parse(objArr[5].toString()));			
+			supplierDetail.setUpdatedAt(LocalDateTime.parse(objArr[5].toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS")));			
 		}else {
 			supplierDetail.setUpdatedAt(null);
 		}
@@ -128,7 +129,7 @@ public class SupplierDetailDaoImpl implements SupplierDetailDao{
 		supplierDetail.setVersion(Long.valueOf(objArr[6].toString()));
 		
 		if(objArr[7] != null) {
-			supplierDetail.setDeletedAt(ZonedDateTime.parse(objArr[7].toString()));			
+			supplierDetail.setDeletedAt(LocalDateTime.parse(objArr[7].toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS")));			
 		}else {
 			supplierDetail.setDeletedAt(null);			
 		}

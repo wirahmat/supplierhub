@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.supplierhub.supplierhub.common.model.request.login.LoginRequest;
-import com.supplierhub.supplierhub.common.model.request.login.TokenReqDto;
+import com.supplierhub.supplierhub.common.model.request.login.TokenRequest;
 import com.supplierhub.supplierhub.common.model.response.LoginResponse;
 import com.supplierhub.supplierhub.service.UserService;
 
@@ -36,7 +36,7 @@ public class LoginController {
 		authenticationManager.authenticate(auth);
 		LoginResponse loginRes = userService.login(user);
 
-		TokenReqDto tokenReqDto = new TokenReqDto();
+		TokenRequest tokenReqDto = new TokenRequest();
 		tokenReqDto.setId(loginRes.getId());
 
 		HttpHeaders headers = new HttpHeaders();

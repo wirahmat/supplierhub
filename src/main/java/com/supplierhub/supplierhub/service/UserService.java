@@ -16,14 +16,6 @@ public interface UserService {
 	
 	String validateToken();
 	
-	void validateIdExist(String id);
-
-	void validateIdActive(String id);
-
-	void validateBkNotExist(String email);
-
-	void validateVersion(String id, Long version);
-
 	List<UserResponse> getAll();
 
 	Optional<User> getEntityById(String id);

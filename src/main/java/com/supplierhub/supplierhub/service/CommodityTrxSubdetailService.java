@@ -10,12 +10,6 @@ import com.supplierhub.supplierhub.persistence.entity.CommodityTrxSubdetail;
 
 public interface CommodityTrxSubdetailService {
 
-	void validateIdExist(String id);
-
-	void validateBkNotExist(String commodityTrxDetailId, String commodityId);
-
-	void validateVersion(String id, Long version);
-
 	List<CommodityTrxSubdetailResponse> getAllByDetailId(String detailId);
 
 	Optional<CommodityTrxSubdetail> getEntityById(String id);

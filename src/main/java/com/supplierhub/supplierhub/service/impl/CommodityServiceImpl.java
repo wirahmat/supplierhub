@@ -30,31 +30,19 @@ public class CommodityServiceImpl implements CommodityService {
 		this.dao = dao;
 	}
 
-	@Override
-	public void validateIdExist(String id) {
+	private void validateIdExist(String id) {
 		if (!dao.existsById(id)) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "commodity id is not found ");
 		}
 	}
 
-	@Override
-	public void validateIdActive(String id) {
-		Commodity commodity = getEntityById(id)
-				.orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "commodity id is not found "));
-		if (Boolean.FALSE.equals(commodity.getIsActive())) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "commodity is not active");
-		}
-	}
-
-	@Override
-	public void validateBkNotExist(String code) {
+	private void validateBkNotExist(String code) {
 		if (dao.existsByCode(code)) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "commodity with same code is exists ");
 		}
 	}
 
-	@Override
-	public void validateVersion(String id, Long version) {
+	private void validateVersion(String id, Long version) {
 		Commodity commodity = getEntityById(id)
 				.orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "commodity is not active"));
 		if (!commodity.getVersion().equals(version)) {

@@ -42,22 +42,19 @@ public class CommodityTrxSubdetailServiceImpl implements CommodityTrxSubdetailSe
 		this.supplierDetailService = supplierDetailService;
 	}
 
-	@Override
-	public void validateIdExist(String id) {
+	private void validateIdExist(String id) {
 		if (!dao.existsById(id)) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "commodity trx subdetail id is not found ");
 		}
 	}
 
-	@Override
-	public void validateBkNotExist(String commodityTrxDetailId, String commodityId) {
+	private void validateBkNotExist(String commodityTrxDetailId, String commodityId) {
 		if (dao.existsByCommodityTrxDetailIdAndCommodityId(commodityTrxDetailId, commodityId)) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "commodity trx subdetail with same code is exists ");
 		}
 	}
 
-	@Override
-	public void validateVersion(String id, Long version) {
+	private void validateVersion(String id, Long version) {
 		CommodityTrxSubdetail commodityTrxSubdetail= getEntityById(id)
 				.orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "commodity trx subdetail is not active"));
 		if (!commodityTrxSubdetail.getVersion().equals(version)) {

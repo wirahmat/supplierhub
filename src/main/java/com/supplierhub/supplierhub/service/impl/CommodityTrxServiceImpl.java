@@ -37,22 +37,19 @@ public class CommodityTrxServiceImpl implements CommodityTrxService {
 		this.userService = userService;
 	}
 
-	@Override
-	public void validateIdExist(String id) {
+	private void validateIdExist(String id) {
 		if (!dao.existsById(id)) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "commodity trx id is not found ");
 		}
 	}
 
-	@Override
-	public void validateBkNotExist(String trxNumber, LocalDate trxDate) {
+	private void validateBkNotExist(String trxNumber, LocalDate trxDate) {
 		if (dao.existsByTrxNumberAndTrxDate(trxNumber, trxDate)) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "commodity trx with same code is exists ");
 		}
 	}
 
-	@Override
-	public void validateVersion(String id, Long version) {
+	private void validateVersion(String id, Long version) {
 		CommodityTrx commodityTrx = getEntityById(id)
 				.orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "commodity trx is not active"));
 		if (!commodityTrx.getVersion().equals(version)) {

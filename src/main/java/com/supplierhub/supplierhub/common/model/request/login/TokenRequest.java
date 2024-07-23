@@ -1,6 +1,6 @@
 package com.supplierhub.supplierhub.common.model.request.login;
 
-public class TokenReqDto {
+public class TokenRequest {
 
 	private String id;
 

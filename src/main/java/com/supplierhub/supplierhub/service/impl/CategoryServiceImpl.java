@@ -25,31 +25,19 @@ public class CategoryServiceImpl implements CategoryService {
 		this.dao = dao;
 	}
 
-	@Override
-	public void validateIdExist(String id) {
+	private void validateIdExist(String id) {
 		if (!dao.existsById(id)) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "category id is not found ");
 		}
 	}
 
-	@Override
-	public void validateIdActive(String id) {
-		Category category = getEntityById(id)
-				.orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "category id is not found "));
-		if (Boolean.FALSE.equals(category.getIsActive())) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "category is not active");
-		}
-	}
-
-	@Override
-	public void validateBkNotExist(String code) {
+	private void validateBkNotExist(String code) {
 		if (dao.existsByCode(code)) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "category with same code is exists ");
 		}
 	}
 
-	@Override
-	public void validateVersion(String id, Long version) {
+	private void validateVersion(String id, Long version) {
 		Category category = getEntityById(id)
 				.orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "category is not active"));
 		if (!category.getVersion().equals(version)) {

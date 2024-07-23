@@ -2,7 +2,6 @@ package com.supplierhub.supplierhub.controller;
 
 import java.util.List;
 
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +17,8 @@ import com.supplierhub.supplierhub.common.model.request.commoditytrx.UpdateCommo
 import com.supplierhub.supplierhub.common.model.response.CommodityTrxResponse;
 import com.supplierhub.supplierhub.service.CommodityTrxService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping({ "/api/commodity-trx" })
 public class CommodityTrxController {
@@ -28,37 +29,37 @@ public class CommodityTrxController {
 		this.commodityTrxService = commodityTrxService;
 	}
 
-	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping()
 	public ResponseEntity<List<CommodityTrxResponse>> getAll() {
 		var result = commodityTrxService.getAll();
 		return ResponseEntity.ok(result);
 	}
 
-	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/{id}")
 	public ResponseEntity<CommodityTrxResponse> getById(@PathVariable String id) {
 		var result = commodityTrxService.getById(id);
 		return ResponseEntity.ok(result);
 	}
 
-	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping()
 	public ResponseEntity<String> add(@RequestBody CreateCommodityTrxRequest request) {
 		commodityTrxService.add(request);
 		return ResponseEntity.ok("commodity trx has been added successfully");
 	}
 
-	@PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> edit(@RequestBody UpdateCommodityTrxRequest request) {
+	@PutMapping()
+	public ResponseEntity<String> edit(@RequestBody @Valid UpdateCommodityTrxRequest request) {
 		commodityTrxService.edit(request);
 		return ResponseEntity.ok("commodity trx has been edited successfully");
 	}
 
-	@DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<String> delete(@PathVariable String id) {
 		commodityTrxService.delete(id);
 		return ResponseEntity.ok("commodity trx has been deleted successfully");
 	}
 
-	@DeleteMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+	@DeleteMapping()
 	public ResponseEntity<String> delete(@RequestBody List<String> ids) {
 		commodityTrxService.delete(ids);
 		return ResponseEntity.ok("commodity trx(s) has been deleted successfully");

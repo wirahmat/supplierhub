@@ -10,14 +10,6 @@ import com.supplierhub.supplierhub.persistence.entity.Supplier;
 
 public interface SupplierService {
 
-	void validateIdExist(String id);
-
-	void validateIdActive(String id);
-
-	void validateBkNotExist(String code);
-
-	void validateVersion(String id, Long version);
-
 	List<SupplierResponse> getAll();
 
 	Optional<Supplier> getEntityById(String id);

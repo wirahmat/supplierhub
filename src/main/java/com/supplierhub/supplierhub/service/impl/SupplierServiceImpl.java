@@ -31,35 +31,21 @@ public class SupplierServiceImpl implements SupplierService{
 		this.supplierDetailService = supplierDetailService;
 	}
 
-	@Override
-	public void validateIdExist(String id) {
+	private void validateIdExist(String id) {
 		if (!dao.existsById(id)) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
 					"supplier id is not found ");
 		}
 	}
 
-	@Override
-	public void validateIdActive(String id) {
-		Supplier supplier = getEntityById(id)
-				.orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
-						"supplier id is not found "));
-		if (Boolean.FALSE.equals(supplier.getIsActive())) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-					"supplier is not active");
-		}
-	}
-	
-	@Override
-	public void validateBkNotExist(String code) {
+	private void validateBkNotExist(String code) {
 		if (dao.existsByCode(code)) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
 					"supplier with same code is exists ");
 		}
 	}
 
-	@Override
-	public void validateVersion(String id, Long version) {
+	private void validateVersion(String id, Long version) {
 		Supplier supplier = getEntityById(id)
 				.orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
 					"supplier is not active" ));

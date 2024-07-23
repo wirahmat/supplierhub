@@ -1,6 +1,7 @@
 package com.supplierhub.supplierhub.persistence.dao.impl;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -98,10 +99,10 @@ public class CommodityTrxDetailDaoImpl implements CommodityTrxDetailDao{
 		supplier.setId(objArr[2].toString());
 		commodityTrxDetail.setSupplier(supplier);
 		
-		commodityTrxDetail.setCreatedAt(ZonedDateTime.parse(objArr[3].toString()));
+		commodityTrxDetail.setCreatedAt(LocalDateTime.parse(objArr[3].toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS")));
 		
 		if(objArr[4] != null) {
-			commodityTrxDetail.setUpdatedAt(ZonedDateTime.parse(objArr[4].toString()));			
+			commodityTrxDetail.setUpdatedAt(LocalDateTime.parse(objArr[4].toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS")));			
 		}else {
 			commodityTrxDetail.setUpdatedAt(null);
 		}
@@ -109,7 +110,7 @@ public class CommodityTrxDetailDaoImpl implements CommodityTrxDetailDao{
 		commodityTrxDetail.setVersion(Long.valueOf(objArr[5].toString()));
 		
 		if(objArr[6] != null) {
-			commodityTrxDetail.setDeletedAt(ZonedDateTime.parse(objArr[6].toString()));			
+			commodityTrxDetail.setDeletedAt(LocalDateTime.parse(objArr[6].toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS")));			
 		}else {
 			commodityTrxDetail.setDeletedAt(null);			
 		}

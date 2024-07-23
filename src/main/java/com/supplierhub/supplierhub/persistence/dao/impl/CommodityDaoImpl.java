@@ -1,7 +1,8 @@
 package com.supplierhub.supplierhub.persistence.dao.impl;
 
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -98,10 +99,10 @@ public class CommodityDaoImpl implements CommodityDao{
 		category.setId(objArr[7].toString());
 		commodity.setCategory(category);
 		
-		commodity.setCreatedAt(ZonedDateTime.parse(objArr[8].toString()));
+		commodity.setCreatedAt(LocalDateTime.parse(objArr[8].toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS")));
 		
 		if(objArr[9] != null) {
-			commodity.setUpdatedAt(ZonedDateTime.parse(objArr[9].toString()));			
+			commodity.setUpdatedAt(LocalDateTime.parse(objArr[9].toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS")));			
 		}else {
 			commodity.setUpdatedAt(null);
 		}
@@ -110,7 +111,7 @@ public class CommodityDaoImpl implements CommodityDao{
 		commodity.setIsActive(Boolean.valueOf(objArr[11].toString()));
 		
 		if(objArr[12] != null) {
-			commodity.setDeletedAt(ZonedDateTime.parse(objArr[12].toString()));			
+			commodity.setDeletedAt(LocalDateTime.parse(objArr[12].toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS")));			
 		}else {
 			commodity.setDeletedAt(null);			
 		}
@@ -143,7 +144,7 @@ public class CommodityDaoImpl implements CommodityDao{
 	@Override
 	public boolean delete(Commodity commodity) {
 		if (commodity != null) {
-			commodity.setDeletedAt(ZonedDateTime.now());
+			commodity.setDeletedAt(LocalDateTime.now());
 		}
 		return false;
 	}

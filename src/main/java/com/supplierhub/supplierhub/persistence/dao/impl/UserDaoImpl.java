@@ -1,6 +1,7 @@
 package com.supplierhub.supplierhub.persistence.dao.impl;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -95,10 +96,10 @@ public class UserDaoImpl implements UserDao{
 		user.setEmail(objArr[2].toString());
 		user.setPassword(objArr[3].toString());			
 		
-		user.setCreatedAt(ZonedDateTime.parse(objArr[4].toString()));
+		user.setCreatedAt(LocalDateTime.parse(objArr[4].toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS")));
 		
 		if(objArr[5] != null) {
-			user.setUpdatedAt(ZonedDateTime.parse(objArr[5].toString()));			
+			user.setUpdatedAt(LocalDateTime.parse(objArr[5].toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS")));			
 		}else {
 			user.setUpdatedAt(null);
 		}
@@ -107,7 +108,7 @@ public class UserDaoImpl implements UserDao{
 		user.setIsActive(Boolean.valueOf(objArr[7].toString()));
 		
 		if(objArr[8] != null) {
-			user.setDeletedAt(ZonedDateTime.parse(objArr[8].toString()));			
+			user.setDeletedAt(LocalDateTime.parse(objArr[8].toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS")));			
 		}else {
 			user.setDeletedAt(null);			
 		}

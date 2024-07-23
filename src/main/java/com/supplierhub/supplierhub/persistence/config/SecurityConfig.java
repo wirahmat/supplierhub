@@ -13,8 +13,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.supplierhub.supplierhub.persistence.filter.AuthorizationFilter;
 
@@ -26,8 +27,8 @@ public class SecurityConfig {
 	public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthorizationFilter authorizationFilter)
 			throws Exception {
 
-		http.cors();
-		http.csrf().disable();
+		http.cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(corsConfigurer()));
+		http.csrf(csrf -> csrf.disable());
 
 		http.addFilterAt(authorizationFilter, BasicAuthenticationFilter.class);
 
@@ -53,20 +54,16 @@ public class SecurityConfig {
 	}
 	
 	@Bean
-	public WebMvcConfigurer corsConfigurer(){
-
-		return new WebMvcConfigurer(){
-			@Override
-			public void addCorsMappings(CorsRegistry registry){
-				registry.addMapping("/**")
-					.allowedOrigins("http://localhost:4200")
-					.allowedMethods(HttpMethod.GET.name(), 
-							HttpMethod.POST.name(), 
-							HttpMethod.PUT.name(), 
-							HttpMethod.PATCH.name(), 
-							HttpMethod.DELETE.name());
-			}
-		};
-	}
-	
+	public CorsConfigurationSource corsConfigurer(){
+		CorsConfiguration corsConfiguration = new CorsConfiguration();
+	    corsConfiguration.setAllowedOrigins(List.of("http://localhost:4200"));
+	    corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE"));
+	    corsConfiguration.setAllowCredentials(true);
+	    corsConfiguration.setAllowedHeaders(List.of("*"));
+	    corsConfiguration.setMaxAge(3600L);
+	    
+	    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+	    source.registerCorsConfiguration("/**", corsConfiguration);
+	    return source;
+	}	
 }

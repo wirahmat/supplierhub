@@ -1,6 +1,7 @@
 package com.supplierhub.supplierhub.persistence.dao.impl;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -117,10 +118,10 @@ public class SupplierDaoImpl implements SupplierDao{
 			supplier.setDescription(null);
 		}
 		
-		supplier.setCreatedAt(ZonedDateTime.parse(objArr[5].toString()));
+		supplier.setCreatedAt(LocalDateTime.parse(objArr[5].toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS")));
 		
 		if(objArr[6] != null) {
-			supplier.setUpdatedAt(ZonedDateTime.parse(objArr[6].toString()));			
+			supplier.setUpdatedAt(LocalDateTime.parse(objArr[6].toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS")));			
 		}else {
 			supplier.setUpdatedAt(null);
 		}
@@ -129,7 +130,7 @@ public class SupplierDaoImpl implements SupplierDao{
 		supplier.setIsActive(Boolean.valueOf(objArr[8].toString()));
 		
 		if(objArr[9] != null) {
-			supplier.setDeletedAt(ZonedDateTime.parse(objArr[9].toString()));			
+			supplier.setDeletedAt(LocalDateTime.parse(objArr[9].toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS")));			
 		}else {
 			supplier.setDeletedAt(null);			
 		}

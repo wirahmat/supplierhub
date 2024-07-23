@@ -10,14 +10,6 @@ import com.supplierhub.supplierhub.persistence.entity.Category;
 
 public interface CategoryService {
 
-	void validateIdExist(String id);
-
-	void validateIdActive(String id);
-
-	void validateBkNotExist(String code);
-
-	void validateVersion(String id, Long version);
-
 	List<CategoryResponse> getAll();
 
 	Optional<Category> getEntityById(String id);

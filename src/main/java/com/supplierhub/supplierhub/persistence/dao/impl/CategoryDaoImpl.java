@@ -1,6 +1,7 @@
 package com.supplierhub.supplierhub.persistence.dao.impl;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -83,10 +84,10 @@ public class CategoryDaoImpl implements CategoryDao{
 			category.setDescription(null);
 		}
 		
-		category.setCreatedAt(ZonedDateTime.parse(objArr[4].toString()));
+		category.setCreatedAt(LocalDateTime.parse(objArr[4].toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS")));
 		
 		if(objArr[5] != null) {
-			category.setUpdatedAt(ZonedDateTime.parse(objArr[5].toString()));			
+			category.setUpdatedAt(LocalDateTime.parse(objArr[5].toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS")));			
 		}else {
 			category.setUpdatedAt(null);
 		}
@@ -95,7 +96,7 @@ public class CategoryDaoImpl implements CategoryDao{
 		category.setIsActive(Boolean.valueOf(objArr[7].toString()));
 		
 		if(objArr[8] != null) {
-			category.setDeletedAt(ZonedDateTime.parse(objArr[8].toString()));			
+			category.setDeletedAt(LocalDateTime.parse(objArr[8].toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS")));			
 		}else {
 			category.setDeletedAt(null);			
 		}

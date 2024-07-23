@@ -35,22 +35,19 @@ public class SupplierDetailServiceImpl implements SupplierDetailService {
 		this.commodityService = commodityService;
 	}
 
-	@Override
-	public void validateIdExist(String id) {
+	private void validateIdExist(String id) {
 		if (!dao.existsById(id)) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "supplier detail id is not found ");
 		}
 	}
 
-	@Override
-	public void validateBkNotExist(String supplierId, String commodityId) {
+	private void validateBkNotExist(String supplierId, String commodityId) {
 		if (dao.existsBySupplierIdAndCommodityId(supplierId, commodityId)) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "supplier detail with same code is exists ");
 		}
 	}
 
-	@Override
-	public void validateVersion(String id, Long version) {
+	private void validateVersion(String id, Long version) {
 		SupplierDetail supplier = getEntityById(id).orElseThrow(
 				() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "supplier detail is not active"));
 		if (!supplier.getVersion().equals(version)) {
@@ -115,9 +112,11 @@ public class SupplierDetailServiceImpl implements SupplierDetailService {
 	@Override
 	@Transactional
 	public void edit(UpdateSupplierDetailRequest data) {
+		validateIdExist(data.getId());
 		validateBkNotExist(data.getSupplierId(), data.getCommodityId());
 
-		SupplierDetail supplierDetail = new SupplierDetail();
+		SupplierDetail supplierDetail = getValidatedEntityById(data.getId());
+		validateVersion(data.getId(), data.getVersion());
 		BeanUtils.copyProperties(data, supplierDetail);
 
 		if(data.getSupplierId() != null) {
@@ -136,6 +135,7 @@ public class SupplierDetailServiceImpl implements SupplierDetailService {
 	@Override
 	@Transactional
 	public void delete(String id) {
+		validateIdExist(id);
 		SupplierDetail supplierDetail = getValidatedEntityById(id);
 		dao.delete(supplierDetail);
 	}
